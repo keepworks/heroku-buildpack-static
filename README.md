@@ -14,8 +14,13 @@ For a guide, read the [Getting Started with Single Page Apps on Heroku](https://
 ## Deploying
 The `static.json` file is required to use this buildpack. This file handles all the configuration described below.
 
-1. Set the app to this buildpack: `$ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-static.git`.
+1. Set the app to this buildpack: `$ heroku buildpacks:set https://github.com/keepworks/heroku-buildpack-static.git`.
 2. Deploy: `$ git push heroku master`
+
+If you have a Single Page App,
+* Follow the instructions [here](https://m.alphasights.com/using-nginx-on-heroku-to-serve-single-page-apps-and-avoid-cors-5d013b171a45).
+* Use `buildpacks:add` to add this buildpack to after `heroku/nodejs`.
+* Configure `postinstall` in your `package.json` to perform any build steps (eg. if you're using Webpack)
 
 ### Configuration
 You can configure different options for your static application by writing a `static.json` in the root folder of your application.
@@ -31,6 +36,23 @@ This allows you to specify a different asset root for the directory of your appl
 ```
 
 By default this is set to `public_html/`
+
+#### Canonical Host
+This allows you to perform 301 redirects to a specific hostname, which can be useful for redirecting www to non-www (or vice versa).
+
+```json
+{
+  "canonical_host": "www.example.com"
+}
+```
+
+You can use environment variables as well:
+
+```json
+{
+  "canonical_host": "${HOST}"
+}
+```
 
 #### Default Character Set
 This allows you to specify a character set for your text assets (HTML, Javascript, CSS, and so on). For most apps, this should be the default value of "UTF-8", but you can override it by setting `encoding`:
