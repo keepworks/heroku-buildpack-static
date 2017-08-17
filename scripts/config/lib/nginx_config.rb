@@ -6,6 +6,7 @@ class NginxConfig
   DEFAULT = {
     root: "public_html/",
     canonical_host: false,
+    canonical_subdomains: false,
     encoding: "UTF-8",
     clean_urls: false,
     https_only: false,
@@ -23,6 +24,8 @@ class NginxConfig
 
     json["canonical_host"] ||= DEFAULT[:canonical_host]
     json["canonical_host"] = NginxConfigUtil.interpolate(json["canonical_host"], ENV) if json["canonical_host"]
+
+    json["canonical_subdomains"] ||= DEFAULT[:canonical_subdomains]
 
     index = 0
     json["proxies"] ||= {}

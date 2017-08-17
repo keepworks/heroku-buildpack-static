@@ -33,7 +33,7 @@ http {
   client_body_timeout 5;
 
   server {
-    listen <%= port %> reuseport;
+    listen <%= port %> reuseport default_server;
     charset <%= encoding %>;
     port_in_redirect off;
     keepalive_timeout 5;
@@ -44,8 +44,10 @@ http {
   <% if proxies.any? %>
     resolver <%= resolver %>;
   <% end %>
-  <% if canonical_host %>
+  <% if canonical_host && !canonical_subdomains %>
     server_name <%= canonical_host %>;
+  <% else %>
+    server_name _;
   <% end %>
 
     location / {
@@ -113,8 +115,21 @@ http {
 
 <% if canonical_host %>
   server {
-    listen <%= port %> default_server;
-    server_name _;
+    <% if canonical_subdomains %>
+      <%
+        redirect_from = if canonical_host.start_with?('www.')
+          canonical_host.gsub(/^www\./, '')
+        else
+          "www.#{canonical_host}"
+        end
+      %>
+      listen <%= port %>;
+      server_name <%= redirect_from %>;
+    <% else %>
+      listen <%= port %> default_server;
+      server_name _;
+    <% end %>
+
     <% if https_only %>
       return 301 https://<%= canonical_host %>$request_uri;
     <% else %>

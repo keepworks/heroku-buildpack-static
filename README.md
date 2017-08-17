@@ -54,6 +54,15 @@ You can use environment variables as well:
 }
 ```
 
+#### Allow Subdomains with Canonical Host
+By default, setting `canonical_host` will redirect all hostnames. This option will perform only 'non-www to www' and 'www to non-www' redirections. (Default: `false`)
+
+```json
+{
+  "canonical_subdomains": true
+}
+```
+
 #### Default Character Set
 This allows you to specify a character set for your text assets (HTML, Javascript, CSS, and so on). For most apps, this should be the default value of "UTF-8", but you can override it by setting `encoding`:
 
